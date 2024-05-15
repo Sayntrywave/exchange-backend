@@ -3,14 +3,13 @@ package com.korotkov.exchange.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 
 @Entity
 @Table(name = "users")
 @Data
 @NoArgsConstructor
-@ToString
-@Getter
-@Setter
 public class User {
 
     @Id
@@ -36,4 +35,9 @@ public class User {
 
     @Column(name = "is_in_ban")
     private Boolean isInBan;
+
+
+    @OneToMany
+    @JoinColumn(name = "id")
+    private List<House> houses;
 }
