@@ -1,0 +1,30 @@
+#db
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASS}
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    protocol: ${MAIL_PROTOCOL}
+    test-connection: true
+
+  sql:
+    init:
+      mode: always
+
+
+
+
+server:
+  error:
+    include-message: always
+
+
+
+jwt:
+  secret: ${SECRET}
