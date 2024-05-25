@@ -1,8 +1,8 @@
 package com.korotkov.exchange.controller.rest;
 
 import com.korotkov.exchange.dto.request.UserEditRequest;
-import com.korotkov.exchange.dto.response.UserDtoResponse;
 import com.korotkov.exchange.model.User;
+import com.korotkov.exchange.service.FileService;
 import com.korotkov.exchange.service.JWTService;
 import com.korotkov.exchange.service.UserService;
 import jakarta.validation.Valid;
@@ -16,9 +16,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
@@ -30,11 +28,14 @@ public class UserController {
 
     JWTService jwtService;
 
+    FileService fileService;
+
     @Autowired
-    public UserController(UserService userService, ModelMapper modelMapper, JWTService jwtService) {
+    public UserController(UserService userService, ModelMapper modelMapper, JWTService jwtService, FileService fileService) {
         this.userService = userService;
         this.modelMapper = modelMapper;
         this.jwtService = jwtService;
+        this.fileService = fileService;
     }
 
     @PutMapping("/user/edit")
@@ -59,6 +60,11 @@ public class UserController {
         userService.delete();
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/user/setProfilePicture")
+    public void setProfilePicture(){
+        fileService.uploadFile("sadas","sdsd");
     }
 
 

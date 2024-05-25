@@ -5,6 +5,7 @@ import com.korotkov.exchange.model.House;
 import com.korotkov.exchange.model.Trade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -33,4 +34,6 @@ public interface TradeRepository extends JpaRepository<Trade, Integer> {
     Integer isTradePossible(int house_id, int house2_id, Date startDate, Date endDate);
 
 
+    @Query("SELECT t FROM Trade t WHERE t.givenHouse.user.id = :userId OR t.receivedHouse.user.id = :userId")
+    List<Trade> findAllMyTrades(Integer userId);
 }

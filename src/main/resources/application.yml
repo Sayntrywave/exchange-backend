@@ -17,7 +17,11 @@ spring:
     init:
       mode: always
 
-
+aws:
+  access-key: ${AWS_ACCESS-KEY}
+  secret-key: ${AWS_SECRET-KEY}
+  region: ${AWS_REGION}
+  endpoint: ${AWS_ENDPOINT}
 
 
 server:

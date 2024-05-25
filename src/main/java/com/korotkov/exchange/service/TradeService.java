@@ -14,6 +14,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -68,4 +70,7 @@ public class TradeService {
     }
 
 
+    public List<Trade> findAllMyTrades() {
+        return tradeRepository.findAllMyTrades(userService.getCurrentUser().getId());
+    }
 }

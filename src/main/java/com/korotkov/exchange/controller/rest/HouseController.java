@@ -5,6 +5,7 @@ import com.korotkov.exchange.dto.request.HouseRequest;
 import com.korotkov.exchange.dto.request.TradeRequest;
 import com.korotkov.exchange.dto.request.TradeStatusRequest;
 import com.korotkov.exchange.dto.response.HouseResponse;
+import com.korotkov.exchange.dto.response.TradeResponse;
 import com.korotkov.exchange.dto.response.UserDtoResponse;
 import com.korotkov.exchange.model.House;
 import com.korotkov.exchange.service.HouseService;
@@ -78,8 +79,16 @@ public class HouseController {
         tradeService.changeStatus(statusRequest.getStatus(), statusRequest.getId());
     }
 
-//    @GetMapping("/houses/trades")
-//    public List<>
+    @GetMapping("/houses/trades")
+    public List<TradeResponse> getAllMyTrades(){
+        return tradeService.findAllMyTrades().stream()
+                .map(trade -> {
+                    TradeResponse map = modelMapper.map(trade, TradeResponse.class);
+                    map.setGivenHouse(getHouseResponse(trade.getGivenHouse()));
+                    map.setReceivedHouse(getHouseResponse(trade.getReceivedHouse()));
+                    return map;
+                }).collect(Collectors.toList());
+    }
 
     private HouseResponse getHouseResponse(House house){
         HouseResponse dto = modelMapper.map(house, HouseResponse.class);
