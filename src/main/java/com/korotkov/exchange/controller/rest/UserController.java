@@ -10,12 +10,18 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -62,10 +68,27 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/user/setProfilePicture")
-    public void setProfilePicture(){
-        fileService.uploadFile("sadas","sdsd");
+    @PostMapping("/user/avatar")
+    public ResponseEntity<Void> uploadUserAvatar(@RequestParam("file") MultipartFile file) throws IOException {
+        userService.uploadProfilePicture(file);
+        return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/user/avatar")
+    public ResponseEntity<InputStreamResource> getUserAvatar() {
+
+        InputStreamResource myProfilePicture = userService.getMyProfilePicture();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+//        headers.setContentLength(;
+
+//        fileService.getObjects().forEach(s3Object -> System.out.println(s3Object.key()));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(myProfilePicture);
+    }
+
 
 
 }

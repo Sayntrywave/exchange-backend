@@ -31,7 +31,8 @@ dependencies {
 	implementation("com.auth0:java-jwt:4.3.0")
 	implementation("org.modelmapper:modelmapper:2.1.1")
 
-	implementation("com.amazonaws:aws-java-sdk-s3:1.12.261")
+	implementation("software.amazon.awssdk:s3:2.17.95")
+	implementation("software.amazon.awssdk:bom:2.17.95")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")

@@ -7,16 +7,16 @@ import com.korotkov.exchange.util.UserNotFoundException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.io.File;
 
 @Transactional(readOnly = true)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -30,14 +30,16 @@ public class UserService {
 
 
     JWTService jwtService;
+    FileService fileService;
 
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MailSenderService mailSenderService, JWTService jwtService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MailSenderService mailSenderService, JWTService jwtService, FileService fileService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailSenderService = mailSenderService;
         this.jwtService = jwtService;
+        this.fileService = fileService;
     }
 
 
@@ -104,6 +106,14 @@ public class UserService {
 
         save(userToBeUpdated);
         return flag;
+    }
+
+    public InputStreamResource getMyProfilePicture(){
+        return fileService.getFile("profile_pictures/" + getCurrentUser().getId() +".png");
+    }
+
+    public void uploadProfilePicture(MultipartFile file){
+        fileService.uploadFile(file,"profile_pictures/" + getCurrentUser().getId());
     }
     public User getById(int id) {
         if (userRepository.existsById(id)) {

@@ -1,14 +1,15 @@
 package com.korotkov.exchange.config;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.korotkov.exchange.config.AwsProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Configuration
 public class AwsConfig {
@@ -17,23 +18,17 @@ public class AwsConfig {
     private AwsProperties awsProperties;
 
     @Bean
-    public AmazonS3 amazonS3() {
-        BasicAWSCredentials awsCreds = new BasicAWSCredentials(
+    public S3Client amazonS3() throws URISyntaxException {
+        AwsBasicCredentials awsCreds = AwsBasicCredentials.create(
                 awsProperties.getAccessKey(),
                 awsProperties.getSecretKey()
         );
 
-        AmazonS3ClientBuilder clientBuilder = AmazonS3ClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(awsCreds));
-
-        if (awsProperties.getEndpoint() != null) {
-            clientBuilder.setEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(
-                    awsProperties.getEndpoint(),
-                    awsProperties.getRegion()
-            ));
-        }
-
-        return clientBuilder.build();
+        return S3Client.builder()
+                .region(Region.US_EAST_1)
+                .endpointOverride(new URI("https://storage.yandexcloud.net"))
+                .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+                .build();
     }
 
 }
