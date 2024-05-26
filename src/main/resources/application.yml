@@ -25,6 +25,7 @@ aws:
 
 
 server:
+  host: ${SERVER_HOST}
   error:
     include-message: always
 

@@ -7,6 +7,7 @@ import com.korotkov.exchange.util.UserNotFoundException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,9 +20,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 
 @Transactional(readOnly = true)
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Service
 public class UserService {
+
+    @Value("${server.host}")
+    String serverHost;
 
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
@@ -69,7 +73,7 @@ public class UserService {
         if (isInBan != null) {
             userToBeUpdated.setIsInBan(isInBan);
             String token = jwtService.generateToken(userToBeUpdated.getEmail(), "email");
-            mailSenderService.send(userToBeUpdated.getEmail(), "Вернуть аккаунт", "http://localhost:8080/activate?t=" + token + "&is-in-ban=" + "false");
+            mailSenderService.send(userToBeUpdated.getEmail(), "Вернуть аккаунт", "http://"+ serverHost+ ":8080/activate?t=" + token + "&is-in-ban=" + "false");
         }
 
         String name = user.getName();
@@ -86,7 +90,7 @@ public class UserService {
                 throw new BadCredentialsException("email <" + email + "> has already been taken");
             }
             String token = jwtService.generateToken(userToBeUpdated.getEmail(), "email");
-            mailSenderService.send(user.getEmail(), "Поменять почту", "http://localhost:8080/activate?t=" + token +
+            mailSenderService.send(user.getEmail(), "Поменять почту", "http://"+ serverHost+ ":8080/activate?t=" + token +
                     "&email=" + user.getEmail());
 
         }

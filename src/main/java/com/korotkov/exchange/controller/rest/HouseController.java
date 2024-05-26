@@ -10,6 +10,7 @@ import com.korotkov.exchange.dto.response.UserDtoResponse;
 import com.korotkov.exchange.model.House;
 import com.korotkov.exchange.service.HouseService;
 import com.korotkov.exchange.service.TradeService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -37,6 +38,7 @@ public class HouseController {
     }
 
     @GetMapping("/houses")
+    @SecurityRequirement(name = "apiKeyAuth")
     public ResponseEntity<List<HouseResponse>> getAllMyHouses(){
         return ResponseEntity.ok(getDtoListOfHouseResponses(houseService.findAllMyHouses()));
     }

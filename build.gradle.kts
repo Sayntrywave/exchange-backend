@@ -28,17 +28,25 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+//	implementation("org.springdoc:springdoc-openapi-starter-common:2.5.0")
 	implementation("com.auth0:java-jwt:4.3.0")
 	implementation("org.modelmapper:modelmapper:2.1.1")
 
 	implementation("software.amazon.awssdk:s3:2.17.95")
 	implementation("software.amazon.awssdk:bom:2.17.95")
+
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.springframework.boot:spring-boot-testcontainers")
+	testImplementation("org.testcontainers:postgresql:1.19.1")
+	testImplementation("org.testcontainers:junit-jupiter:1.19.1")
+
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

@@ -10,12 +10,14 @@ import com.korotkov.exchange.service.MailSenderService;
 import com.korotkov.exchange.service.RegistrationService;
 import com.korotkov.exchange.service.UserService;
 import com.korotkov.exchange.util.UserNotCreatedException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,9 +28,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthController {
 
+    @Value("${server.host}")
+    String serverHost;
     UserService userService;
     AuthenticationManager authenticationManager;
     ModelMapper modelMapper;
@@ -59,7 +63,7 @@ public class AuthController {
 
         String token = registrationService.register(modelMapper.map(user, EmailUser.class));
 
-        mailSenderService.send(user.getEmail(), "Регистрация", "http://localhost:8080/activate?t=" + token);
+        mailSenderService.send(user.getEmail(), "Регистрация", "http://"+ serverHost+ ":8080/activate?t="  + token);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
