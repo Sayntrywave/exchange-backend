@@ -6,9 +6,6 @@ services:
       POSTGRES_USER: admin1
       POSTGRES_PASSWORD: 2281337
       POSTGRES_DB: CardTraderDB
-#      PGDATA: /var/lib/postgresql/data
-#    volumes:
-#      - postgres_data:/postgres
     ports:
       - "5499:5432"
     extra_hosts:
@@ -27,14 +24,4 @@ services:
       resources:
         limits:
           memory: 300M
-#  yo_db:
-#    image: postgres
-#    env_file:
-#      - db.env
-#    #    restart: always
-#    ports:
-#      - "5422:5432"
-#    environment:
-#      - POSTGRES_USERNAME=postgres
-#      - POSTGRES_PASSWORD=password
-#      - POSTGRES_DB=blog
+
