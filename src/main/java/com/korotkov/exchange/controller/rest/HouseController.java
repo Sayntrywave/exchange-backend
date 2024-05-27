@@ -8,15 +8,19 @@ import com.korotkov.exchange.dto.response.HouseResponse;
 import com.korotkov.exchange.dto.response.TradeResponse;
 import com.korotkov.exchange.dto.response.UserDtoResponse;
 import com.korotkov.exchange.model.House;
+import com.korotkov.exchange.service.FileService;
 import com.korotkov.exchange.service.HouseService;
 import com.korotkov.exchange.service.TradeService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import com.korotkov.exchange.util.ImageMetaData;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +33,7 @@ public class HouseController {
     ModelMapper modelMapper;
     HouseService houseService;
     TradeService tradeService;
+    FileService fileService;
 
 
 
@@ -38,7 +43,7 @@ public class HouseController {
     }
 
     @GetMapping("/houses")
-    @SecurityRequirement(name = "apiKeyAuth")
+//    @SecurityRequirement(name = "apiKeyAuth")
     public ResponseEntity<List<HouseResponse>> getAllMyHouses(){
         return ResponseEntity.ok(getDtoListOfHouseResponses(houseService.findAllMyHouses()));
     }
@@ -79,6 +84,18 @@ public class HouseController {
     @PutMapping("/houses/trade")
     public void changeTradeStatus(@RequestBody TradeStatusRequest statusRequest){
         tradeService.changeStatus(statusRequest.getStatus(), statusRequest.getId());
+    }
+
+    @GetMapping(value = "/houses/{id}/images")
+    public List<ImageMetaData> getAllHouseImages(@PathVariable("id") Integer id){
+
+        return houseService.findAllHouseImages(id);
+    }
+
+
+    @PostMapping(value = "/houses/{id}/images")
+    public void addHouseImages(@PathVariable("id") Integer id, @RequestPart("files") MultipartFile[] files){
+        houseService.addImages(files, id);
     }
 
     @GetMapping("/houses/trades")

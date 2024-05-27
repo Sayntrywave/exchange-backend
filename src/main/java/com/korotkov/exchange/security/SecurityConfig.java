@@ -48,7 +48,7 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(requests -> requests
-                            .requestMatchers("/login", "/register", "/error", "/activate","/swagger-ui.html","/swagger-ui/**","/v3/api-docs/**").permitAll()
+                            .requestMatchers("/login", "/register","/houses/{id}/images", "/error", "/activate","/swagger-ui.html","/swagger-ui/**","/v3/api-docs/**").permitAll()
                         .anyRequest().hasRole("USER"))
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

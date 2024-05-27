@@ -37,14 +37,12 @@ public class UserController {
 
     JWTService jwtService;
 
-    FileService fileService;
 
     @Autowired
-    public UserController(UserService userService, ModelMapper modelMapper, JWTService jwtService, FileService fileService) {
+    public UserController(UserService userService, ModelMapper modelMapper, JWTService jwtService) {
         this.userService = userService;
         this.modelMapper = modelMapper;
         this.jwtService = jwtService;
-        this.fileService = fileService;
     }
 
     @PutMapping("/user/edit")
@@ -73,22 +71,29 @@ public class UserController {
 
     @PostMapping("/user/avatar")
     public ResponseEntity<Void> uploadUserAvatar(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.getContentType() != null && file.getContentType().startsWith("image/")) {
+            System.out.println("yo this is an image");
+
+            //todo: validate file
+        }
         userService.uploadProfilePicture(file);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/user/avatar")
+    @GetMapping(value = "/user/avatar", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<InputStreamResource> getUserAvatar() {
 
         InputStreamResource myProfilePicture = userService.getMyProfilePicture();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_PNG);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.IMAGE_PNG);
+
+        //todo check image/png MediaType.valueOf()
 //        headers.setContentLength(;
 
 //        fileService.getObjects().forEach(s3Object -> System.out.println(s3Object.key()));
 
         return ResponseEntity.ok()
-                .headers(headers)
+//                .headers(headers)
                 .body(myProfilePicture);
     }
 

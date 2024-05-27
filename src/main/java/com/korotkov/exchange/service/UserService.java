@@ -113,11 +113,15 @@ public class UserService {
     }
 
     public InputStreamResource getMyProfilePicture(){
+
+        //todo refactor
         return fileService.getFile("profile_pictures/" + getCurrentUser().getId() +".png");
     }
 
     public void uploadProfilePicture(MultipartFile file){
-        fileService.uploadFile(file,"profile_pictures/" + getCurrentUser().getId());
+        fileService.uploadFile(file,"profile_pictures/" +
+                getCurrentUser().getId() +
+                file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") ));
     }
     public User getById(int id) {
         if (userRepository.existsById(id)) {
