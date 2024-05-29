@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
-@Transactional(readOnly = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Service
 public class UserService {

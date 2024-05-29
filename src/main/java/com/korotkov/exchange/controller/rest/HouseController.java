@@ -16,8 +16,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,7 +53,7 @@ public class HouseController {
 
     @PostMapping("/houses")
     public void saveHouse(@RequestBody HouseRequest request) {
-        houseService.save(modelMapper.map(request, House.class));
+        houseService.create(modelMapper.map(request, House.class));
     }
 
 
@@ -66,7 +64,7 @@ public class HouseController {
 
     @PutMapping("/houses/{id}")
     public void editHouse(@PathVariable Integer id, @RequestBody HouseRequest request) {
-        houseService.edit(modelMapper.map(request, House.class));
+        houseService.edit(modelMapper.map(request, House.class), id);
     }
 
     @DeleteMapping("/houses/{id}")

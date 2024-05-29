@@ -3,6 +3,7 @@ package com.korotkov.exchange.service;
 
 import com.korotkov.exchange.model.EmailUser;
 import com.korotkov.exchange.model.User;
+import com.korotkov.exchange.model.UserRole;
 import com.korotkov.exchange.repository.EmailRepository;
 import com.korotkov.exchange.repository.UserRepository;
 import com.korotkov.exchange.util.UserNotCreatedException;
@@ -66,6 +67,7 @@ public class RegistrationService {
                     findEmailUserByEmail(userEmail)
                     .orElseThrow(() -> new UserNotFoundException("user not found"));
             User map = modelMapper.map(emailUser, User.class);
+            map.setRole(UserRole.USER);
             repository.save(map);
             emailRepository.delete(emailUser);
         } else if (isInBan != null) {

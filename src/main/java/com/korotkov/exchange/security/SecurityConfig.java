@@ -49,7 +49,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(requests -> requests
                             .requestMatchers("/login", "/register","/houses/{id}/images", "/error", "/activate","/swagger-ui.html","/swagger-ui/**","/v3/api-docs/**").permitAll()
-                        .anyRequest().hasRole("USER"))
+                        .anyRequest().hasAnyRole("USER","MODERATOR"))
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

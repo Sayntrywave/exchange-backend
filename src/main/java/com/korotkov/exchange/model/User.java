@@ -2,6 +2,9 @@ package com.korotkov.exchange.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.Type;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.util.List;
 
@@ -35,6 +38,11 @@ public class User {
 
     @Column(name = "is_in_ban")
     private Boolean isInBan;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(name = "user_role")
+    private UserRole role;
 
 
     @OneToMany

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class UserDtoResponse {
-
+    Integer id;
     String login;
     String surname;
     String name;
