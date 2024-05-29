@@ -1,5 +1,6 @@
 package com.korotkov.exchange.controller.rest;
 
+import com.korotkov.exchange.dto.request.ReportRequest;
 import com.korotkov.exchange.dto.request.UserEditRequest;
 import com.korotkov.exchange.model.User;
 import com.korotkov.exchange.service.FileService;
@@ -30,6 +31,7 @@ import java.util.Map;
 @RestController
 @CrossOrigin
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequestMapping("/user")
 public class UserController {
 
     UserService userService;
@@ -45,7 +47,7 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
-    @PutMapping("/user/edit")
+    @PutMapping("/edit")
     public ResponseEntity<Map<String, String>> editUser(@RequestBody @Valid UserEditRequest userEditRequest,
                                                         BindingResult bindingResult) {
 
@@ -62,14 +64,14 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/user/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<HttpStatus> deleteUser() {
         userService.delete();
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/user/avatar")
+    @PostMapping("/avatar")
     public ResponseEntity<Void> uploadUserAvatar(@RequestParam("file") MultipartFile file) throws IOException {
         if (file.getContentType() != null && file.getContentType().startsWith("image/")) {
             System.out.println("yo this is an image");
@@ -80,7 +82,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/user/avatar", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/avatar", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<InputStreamResource> getUserAvatar() {
 
         InputStreamResource myProfilePicture = userService.getMyProfilePicture();
@@ -97,6 +99,11 @@ public class UserController {
                 .body(myProfilePicture);
     }
 
+    @PostMapping("/report")
+    public ResponseEntity<String> reportUser(@RequestBody ReportRequest request){
+        userService.report(request);
+        return ResponseEntity.ok("Reported!");
+    }
 
 
 }

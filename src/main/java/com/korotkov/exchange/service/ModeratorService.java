@@ -2,10 +2,11 @@ package com.korotkov.exchange.service;
 
 
 import com.korotkov.exchange.dto.request.ModeratorDecision;
-import com.korotkov.exchange.model.House;
-import com.korotkov.exchange.model.HouseModeration;
-import com.korotkov.exchange.model.HouseStatus;
+import com.korotkov.exchange.dto.request.ReportDetails;
+import com.korotkov.exchange.dto.request.ReportRequest;
+import com.korotkov.exchange.model.*;
 import com.korotkov.exchange.repository.HouseModerationRepository;
+import com.korotkov.exchange.repository.ReportedUserRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,7 +21,9 @@ import java.util.List;
 public class ModeratorService {
 
     HouseModerationRepository houseModerationRepository;
+    ReportedUserRepository reportedUserRepository;
     HouseService houseService;
+    UserService userService;
 
     @Transactional
     public void moderate(ModeratorDecision decision){
@@ -56,8 +59,28 @@ public class ModeratorService {
 
         houseService.save(house);
     }
-    public List<HouseModeration> getListOfHouses(){
+    public List<HouseModeration> findAllHouses(){
         return houseModerationRepository.findAllByIsApprovedIsNull();
     }
 
+    public List<ReportedUser> findAllReportedUsers(){
+        return reportedUserRepository.findAllByIsRejectedNull();
+    }
+
+    @Transactional
+    public void banUser(ReportDetails reportDetails) {
+        User user = userService.getById(reportDetails.getUserId());
+        user.setIsInBan(true);
+        userService.save(user);
+
+        ReportedUser reportedUser = reportedUserRepository.getReferenceById(reportDetails.getId());
+        reportedUser.setIsRejected(false);
+        reportedUserRepository.save(reportedUser);
+    }
+
+    public void rejectRequest(ReportDetails reportDetails) {
+        ReportedUser reportedUser = reportedUserRepository.getReferenceById(reportDetails.getId());
+        reportedUser.setIsRejected(true);
+        reportedUserRepository.save(reportedUser);
+    }
 }

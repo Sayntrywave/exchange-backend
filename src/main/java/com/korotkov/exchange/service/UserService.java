@@ -1,6 +1,9 @@
 package com.korotkov.exchange.service;
 
+import com.korotkov.exchange.dto.request.ReportRequest;
+import com.korotkov.exchange.model.ReportedUser;
 import com.korotkov.exchange.model.User;
+import com.korotkov.exchange.repository.ReportedUserRepository;
 import com.korotkov.exchange.repository.UserRepository;
 import com.korotkov.exchange.security.MyUserDetails;
 import com.korotkov.exchange.util.UserNotFoundException;
@@ -17,32 +20,34 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Service
+
 public class UserService {
 
     @Value("${server.host}")
     String serverHost;
 
-    UserRepository userRepository;
-    PasswordEncoder passwordEncoder;
+    final UserRepository userRepository;
+    final PasswordEncoder passwordEncoder;
 
-    MailSenderService mailSenderService;
+    final MailSenderService mailSenderService;
 
 
-    JWTService jwtService;
-    FileService fileService;
+    final JWTService jwtService;
+    final FileService fileService;
+
+    final ReportedUserRepository reportedUserRepository;
 
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MailSenderService mailSenderService, JWTService jwtService, FileService fileService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MailSenderService mailSenderService, JWTService jwtService, FileService fileService, ReportedUserRepository reportedUserRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailSenderService = mailSenderService;
         this.jwtService = jwtService;
         this.fileService = fileService;
+        this.reportedUserRepository = reportedUserRepository;
     }
 
 
@@ -141,6 +146,15 @@ public class UserService {
             return ((MyUserDetails) principal).user();
         }
         return new User();
+    }
+
+    @Transactional
+    public void report(ReportRequest request) {
+        ReportedUser reportedUser = new ReportedUser();
+        reportedUser.setReporter(getCurrentUser());
+        reportedUser.setReportedUser(findByLogin(request.getLogin()));
+        reportedUser.setComplaintReason(request.getComplaintReason());
+        reportedUserRepository.save(reportedUser);
     }
 }
 
