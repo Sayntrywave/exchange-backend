@@ -116,10 +116,10 @@ public class UserService {
         return flag;
     }
 
-    public InputStreamResource getMyProfilePicture(){
+    public InputStreamResource getProfilePicture(int id){
 
         //todo refactor
-        return fileService.getFile("profile_pictures/" + getCurrentUser().getId() +".png");
+        return fileService.getFile("profile_pictures/" + id +".png");
     }
 
     public void uploadProfilePicture(MultipartFile file){

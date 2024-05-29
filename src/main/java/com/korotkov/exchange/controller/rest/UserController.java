@@ -3,19 +3,14 @@ package com.korotkov.exchange.controller.rest;
 import com.korotkov.exchange.dto.request.ReportRequest;
 import com.korotkov.exchange.dto.request.UserEditRequest;
 import com.korotkov.exchange.model.User;
-import com.korotkov.exchange.service.FileService;
 import com.korotkov.exchange.service.JWTService;
 import com.korotkov.exchange.service.UserService;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +19,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -82,10 +76,10 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/avatar", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<InputStreamResource> getUserAvatar() {
+    @GetMapping(value = "/avatar/{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<InputStreamResource> getUserAvatar(@PathVariable int id) {
 
-        InputStreamResource myProfilePicture = userService.getMyProfilePicture();
+        InputStreamResource myProfilePicture = userService.getProfilePicture(id);
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.setContentType(MediaType.IMAGE_PNG);
 

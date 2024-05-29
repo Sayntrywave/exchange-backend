@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -48,8 +49,12 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(requests -> requests
-                            .requestMatchers("/login", "/register","/houses/{id}/images", "/error", "/activate","/swagger-ui.html","/swagger-ui/**","/v3/api-docs/**").permitAll()
-                        .anyRequest().hasAnyRole("USER","MODERATOR"))
+                            .requestMatchers("/login", "/register",
+                                    "/error", "/activate","/swagger-ui.html",
+                                    "/swagger-ui/**","/v3/api-docs/**").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/cities","/houses/find","/houses/{id}/**","/user/**").permitAll()
+                            .requestMatchers("/moderator/**").hasRole("MODERATOR")
+                            .anyRequest().hasRole("USER"))
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
