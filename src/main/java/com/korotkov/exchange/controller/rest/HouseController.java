@@ -10,7 +10,6 @@ import com.korotkov.exchange.dto.response.HouseReviewResponse;
 import com.korotkov.exchange.dto.response.TradeResponse;
 import com.korotkov.exchange.dto.response.UserDtoResponse;
 import com.korotkov.exchange.model.House;
-import com.korotkov.exchange.model.HouseReview;
 import com.korotkov.exchange.service.FileService;
 import com.korotkov.exchange.service.HouseService;
 import com.korotkov.exchange.service.TradeService;
@@ -19,6 +18,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -92,6 +93,13 @@ public class HouseController {
 
         return houseService.findAllHouseImages(id);
     }
+
+    @GetMapping(value = "/houses/{id}/image", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<InputStreamResource> getHouseImage(@PathVariable("id") Integer id, @RequestParam("path") String path){
+
+        return ResponseEntity.ok(houseService.getImage(id, path));
+    }
+
 
 
     @PostMapping(value = "/houses/{id}/images")

@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -137,5 +138,9 @@ public class HouseService {
 
     public List<HouseReview> findAllReviews(int id) {
         return reviewRepository.findAllByHouse_Id(id);
+    }
+
+    public InputStreamResource getImage(Integer id, String path) {
+        return fileService.getFile(path);
     }
 }
