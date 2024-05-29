@@ -2,12 +2,15 @@ package com.korotkov.exchange.controller.rest;
 
 
 import com.korotkov.exchange.dto.request.HouseRequest;
+import com.korotkov.exchange.dto.request.HouseReviewRequest;
 import com.korotkov.exchange.dto.request.TradeRequest;
 import com.korotkov.exchange.dto.request.TradeStatusRequest;
 import com.korotkov.exchange.dto.response.HouseResponse;
+import com.korotkov.exchange.dto.response.HouseReviewResponse;
 import com.korotkov.exchange.dto.response.TradeResponse;
 import com.korotkov.exchange.dto.response.UserDtoResponse;
 import com.korotkov.exchange.model.House;
+import com.korotkov.exchange.model.HouseReview;
 import com.korotkov.exchange.service.FileService;
 import com.korotkov.exchange.service.HouseService;
 import com.korotkov.exchange.service.TradeService;
@@ -105,6 +108,22 @@ public class HouseController {
                     map.setReceivedHouse(getHouseResponse(trade.getReceivedHouse()));
                     return map;
                 }).collect(Collectors.toList());
+    }
+
+    @PostMapping("/houses/review")
+    public void addReview(@RequestBody HouseReviewRequest houseReviewRequest){
+        houseService.addReview(houseReviewRequest);
+    }
+
+    @GetMapping("/houses/{id}/reviews")
+    public ResponseEntity<List<HouseReviewResponse>> getReviews(@PathVariable int id){
+        return ResponseEntity.ok(houseService.findAllReviews(id).stream()
+                .map(houseReview -> {
+                    HouseReviewResponse map = modelMapper.map(houseReview, HouseReviewResponse.class);
+                    map.setUserDtoResponse(modelMapper.map(houseReview.getAuthor(), UserDtoResponse.class));
+                    return map;
+                })
+                .collect(Collectors.toList()));
     }
 
     private HouseResponse getHouseResponse(House house){

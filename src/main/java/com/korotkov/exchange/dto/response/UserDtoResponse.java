@@ -11,4 +11,7 @@ public class UserDtoResponse {
     String login;
     String surname;
     String name;
+    Integer totalReviews;
+    Integer  ratingSum;
+
 }

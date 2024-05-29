@@ -39,6 +39,12 @@ public class User {
     @Column(name = "is_in_ban")
     private Boolean isInBan;
 
+    @Column(name = "total_reviews")
+    private int totalReviews;
+
+    @Column(name = "rating_sum")
+    private int ratingSum;
+
     @Enumerated(EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "user_role")
@@ -48,4 +54,14 @@ public class User {
     @OneToMany
     @JoinColumn(name = "id")
     private List<House> houses;
+
+
+    public void addRating(int rating){
+        ratingSum += rating;
+        totalReviews ++;
+    }
+
+    public double getAverageRating(){
+        return (double) ratingSum /totalReviews;
+    }
 }

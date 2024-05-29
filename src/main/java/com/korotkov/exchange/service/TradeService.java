@@ -2,6 +2,7 @@ package com.korotkov.exchange.service;
 
 
 import com.korotkov.exchange.dto.request.TradeRequest;
+import com.korotkov.exchange.model.House;
 import com.korotkov.exchange.model.Trade;
 import com.korotkov.exchange.model.TradeStatus;
 import com.korotkov.exchange.repository.TradeRepository;
@@ -67,6 +68,10 @@ public class TradeService {
         else {
             throw new BadCredentialsException("Нельзя изменить сделку других пользователей");
         }
+    }
+
+    public boolean haveTrade(int userId, House house){
+        return tradeRepository.findAllByUserAndHouse(userId, house.getId()) != 0;
     }
 
 

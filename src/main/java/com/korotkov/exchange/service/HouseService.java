@@ -1,11 +1,12 @@
 package com.korotkov.exchange.service;
 
 
-import com.korotkov.exchange.model.House;
-import com.korotkov.exchange.model.HouseModeration;
-import com.korotkov.exchange.model.HouseStatus;
+import com.korotkov.exchange.dto.request.HouseReviewRequest;
+import com.korotkov.exchange.model.*;
 import com.korotkov.exchange.repository.HouseModerationRepository;
 import com.korotkov.exchange.repository.HouseRepository;
+import com.korotkov.exchange.repository.HouseReviewRepository;
+import com.korotkov.exchange.repository.TradeRepository;
 import com.korotkov.exchange.util.ImageMetaData;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,8 @@ public class HouseService {
     UserService userService;
     FileService fileService;
     ModelMapper modelMapper;
+    TradeRepository tradeRepository;
+    HouseReviewRepository reviewRepository;
 
 
 
@@ -114,5 +117,25 @@ public class HouseService {
 
     public List<ImageMetaData> findAllHouseImages(Integer houseId){
         return fileService.getAllImages("house_images/" + houseId + "/");
+    }
+
+    @Transactional
+    public void addReview(HouseReviewRequest request) {
+        User currentUser = userService.getCurrentUser();
+        HouseReview review = modelMapper.map(request, HouseReview.class);
+        review.setHouse(houseRepository.getReferenceById(request.getHouseId()));
+         if(currentUser.getId() != review.getHouse().getUser().getId()){
+            //todo
+            if(tradeRepository.findAllByUserAndHouse(review.getHouse().getId(),currentUser.getId())!= 0){
+                review.setAuthor(currentUser);
+                reviewRepository.save(review);
+                review.getHouse().getUser().addRating(request.getRating());
+                //todo проверить чтобы можно было только один отзыв
+            }
+        }
+    }
+
+    public List<HouseReview> findAllReviews(int id) {
+        return reviewRepository.findAllByHouse_Id(id);
     }
 }
