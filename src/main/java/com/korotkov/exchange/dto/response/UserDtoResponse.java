@@ -1,6 +1,7 @@
 package com.korotkov.exchange.dto.response;
 
 
+import com.korotkov.exchange.model.UserRole;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,5 +14,6 @@ public class UserDtoResponse {
     String name;
     Integer totalReviews;
     Integer  ratingSum;
+    UserRole role;
 
 }

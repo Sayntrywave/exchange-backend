@@ -2,6 +2,7 @@ package com.korotkov.exchange.controller.rest;
 
 import com.korotkov.exchange.dto.request.ReportRequest;
 import com.korotkov.exchange.dto.request.UserEditRequest;
+import com.korotkov.exchange.dto.response.UserDtoResponse;
 import com.korotkov.exchange.model.User;
 import com.korotkov.exchange.service.JWTService;
 import com.korotkov.exchange.service.UserService;
@@ -41,6 +42,10 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<UserDtoResponse> me(){
+        return ResponseEntity.ok(modelMapper.map(userService.getCurrentUser(), UserDtoResponse.class));
+    }
     @PutMapping("/edit")
     public ResponseEntity<Map<String, String>> editUser(@RequestBody @Valid UserEditRequest userEditRequest,
                                                         BindingResult bindingResult) {

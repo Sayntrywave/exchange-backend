@@ -12,7 +12,7 @@ services:
       - "host.docker.internal:host-gateway"
 
   app:
-    image: syantrywave/exchange:1.2.0
+    image: syantrywave/exchange:1.2.1
     env_file:
       - .env
     restart: always
