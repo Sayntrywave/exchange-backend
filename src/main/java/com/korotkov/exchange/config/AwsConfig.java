@@ -14,8 +14,11 @@ import java.net.URISyntaxException;
 @Configuration
 public class AwsConfig {
 
-    @Autowired
-    private AwsProperties awsProperties;
+    private final AwsProperties awsProperties;
+
+    public AwsConfig(AwsProperties awsProperties) {
+        this.awsProperties = awsProperties;
+    }
 
     @Bean
     public S3Client amazonS3() throws URISyntaxException {
@@ -30,5 +33,4 @@ public class AwsConfig {
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
                 .build();
     }
-
 }

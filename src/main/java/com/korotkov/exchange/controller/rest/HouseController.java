@@ -19,11 +19,13 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,13 +37,22 @@ public class HouseController {
     ModelMapper modelMapper;
     HouseService houseService;
     TradeService tradeService;
-    FileService fileService;
+//    FileService fileService;
 
 
 
+//    @GetMapping("/houses/find")
+//    public ResponseEntity<List<HouseResponse>> getAllHouses(@RequestParam(name = "c") String city){
+//        return ResponseEntity.ok(getDtoListOfHouseResponses(houseService.findAllHouses(city)));
+//    }
     @GetMapping("/houses/find")
-    public ResponseEntity<List<HouseResponse>> getAllHouses(@RequestParam(name = "c") String city){
-        return ResponseEntity.ok(getDtoListOfHouseResponses(houseService.findAllHousesByCity(city)));
+    public ResponseEntity<List<HouseResponse>> getAllHouses(@RequestParam(name = "c") String city,
+                                                            @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd")Date sDate,
+                                                            @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd")Date eDate){
+        if(eDate == null || sDate == null){
+            return ResponseEntity.ok(getDtoListOfHouseResponses(houseService.findAllHouses(city)));
+        }
+        return ResponseEntity.ok(getDtoListOfHouseResponses(houseService.findAllHouses(city, sDate, eDate)));
     }
 
     @GetMapping("/houses")

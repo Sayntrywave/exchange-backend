@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -105,8 +106,12 @@ public class HouseService {
     }
 
 
-    public List<House> findAllHousesByCity(String city) {
+    public List<House> findAllHouses(String city) {
         return houseRepository.getAllByCityIgnoreCaseStartingWith(city);
+    }
+
+    public List<House> findAllHouses(String city, Date sDate, Date eDate){
+        return houseRepository.getAllCitiesWithCityAndDate(city, sDate, eDate);
     }
 
     public void addImages(MultipartFile[] files, int id) {

@@ -10,6 +10,8 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 @Table(name = "houses")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class House {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
