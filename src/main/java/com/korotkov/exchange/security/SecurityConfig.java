@@ -52,10 +52,10 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/register",
                                 "/error", "/activate", "/swagger-ui.html",
                                 "/swagger-ui/**", "/v3/api-docs/**", "/users/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/cities", "/houses/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/cities", "/houses/**","/activate").permitAll()
                         .requestMatchers(HttpMethod.GET,"/houses/trades").hasRole("USER")
                         .requestMatchers("/moderator/**").hasRole("MODERATOR")
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

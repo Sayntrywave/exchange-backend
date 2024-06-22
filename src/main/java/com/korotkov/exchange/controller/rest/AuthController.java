@@ -65,13 +65,13 @@ public class AuthController {
     }
 
 
-    @GetMapping("/activate")
-    public ResponseEntity<HttpStatus> activate(@RequestParam(value = "t") String token,
-                                               @RequestParam(value = "is-in-ban", required = false) Boolean isInBan,
-                                               @Email @RequestParam(value = "email", required = false) String email) {
-        registrationService.activate(token, isInBan, email);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @GetMapping("/activate")
+//    public ResponseEntity<HttpStatus> activate(@RequestParam(value = "t") String token,
+//                                               @RequestParam(value = "is-in-ban", required = false) Boolean isInBan,
+//                                               @Email @RequestParam(value = "email", required = false) String email) {
+//        registrationService.activate(token, isInBan, email);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
 
     @PostMapping("/login")
