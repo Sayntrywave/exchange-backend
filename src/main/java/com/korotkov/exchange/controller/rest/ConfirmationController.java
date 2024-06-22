@@ -19,7 +19,12 @@ public class ConfirmationController {
     public String activate(@RequestParam(value = "t") String token,
                            @RequestParam(value = "is-in-ban", required = false) Boolean isInBan,
                            @Email @RequestParam(value = "email", required = false) String email) {
-        registrationService.activate(token, isInBan, email);
-        return "confirm";
+        boolean result = registrationService.activate(token, isInBan, email);
+        if(result){
+            return "confirm";
+        }
+        else {
+            return "already_confirmed";
+        }
     }
 }

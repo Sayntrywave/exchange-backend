@@ -72,28 +72,34 @@ public class RegistrationService {
     }
 
     @Transactional
-    public void activate(String token, Boolean isInBan, String email) {
+    public boolean activate(String token, Boolean isInBan, String email) {
         String userEmail = jwtService.validateTokenAndRetrieveClaim(token, "email");
-        if (isInBan == null && email == null) {
+        try {
+            if (isInBan == null && email == null) {
 
-            EmailUser emailUser = emailRepository.
-                    findEmailUserByEmail(userEmail)
-                    .orElseThrow(() -> new UserNotFoundException("user not found"));
-            User map = modelMapper.map(emailUser, User.class);
-            map.setRole(UserRole.USER);
-            repository.save(map);
-            emailRepository.delete(emailUser);
-        } else if (isInBan != null) {
-            User user = repository.findUserByEmail(userEmail)
-                    .orElseThrow(() -> new UserNotFoundException("user not found"));
-            user.setIsInBan(isInBan);
-            repository.save(user);
-        } else {
-            User user = repository.findUserByEmail(userEmail)
-                    .orElseThrow(() -> new UserNotFoundException("user not found"));
-            user.setEmail(email);
-            repository.save(user);
+                EmailUser emailUser = emailRepository.
+                        findEmailUserByEmail(userEmail)
+                        .orElseThrow(() -> new UserNotFoundException("user not found"));
+                User map = modelMapper.map(emailUser, User.class);
+                map.setRole(UserRole.USER);
+                repository.save(map);
+                emailRepository.delete(emailUser);
+            } else if (isInBan != null) {
+                User user = repository.findUserByEmail(userEmail)
+                        .orElseThrow(() -> new UserNotFoundException("user not found"));
+                user.setIsInBan(isInBan);
+                repository.save(user);
+            } else {
+                User user = repository.findUserByEmail(userEmail)
+                        .orElseThrow(() -> new UserNotFoundException("user not found"));
+                user.setEmail(email);
+                repository.save(user);
+            }
+            return true;
+        } catch (UserNotFoundException e){
+            return false;
         }
+
     }
 
 }
