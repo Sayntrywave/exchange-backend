@@ -26,4 +26,6 @@ public interface HouseRepository extends JpaRepository<House, Integer> {
     @Query("SELECT DISTINCT h.city FROM House h")
     List<String> findAllCities();
 
+    List<House> getHousesByUserId(int id);
+
 }

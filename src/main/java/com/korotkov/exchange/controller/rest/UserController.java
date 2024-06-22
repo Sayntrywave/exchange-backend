@@ -26,7 +26,6 @@ import java.util.Map;
 @RestController
 @CrossOrigin
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("/user")
 public class UserController {
 
     UserService userService;
@@ -42,11 +41,11 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
-    @GetMapping("/me")
+    @GetMapping("/user/me")
     public ResponseEntity<UserDtoResponse> me(){
         return ResponseEntity.ok(modelMapper.map(userService.getCurrentUser(), UserDtoResponse.class));
     }
-    @PutMapping("/edit")
+    @PutMapping("/user/edit")
     public ResponseEntity<Map<String, String>> editUser(@RequestBody @Valid UserEditRequest userEditRequest,
                                                         BindingResult bindingResult) {
 
@@ -63,46 +62,36 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/user/delete")
     public ResponseEntity<HttpStatus> deleteUser() {
         userService.delete();
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/avatar")
+    @PostMapping("/user/avatar")
     public ResponseEntity<Void> uploadUserAvatar(@RequestParam("file") MultipartFile file) throws IOException {
         if (file.getContentType() != null && file.getContentType().startsWith("image/")) {
             System.out.println("yo this is an image");
-
-            //todo: validate file
         }
         userService.uploadProfilePicture(file);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/avatar/{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/users/{id}/avatar", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<InputStreamResource> getUserAvatar(@PathVariable int id) {
 
         InputStreamResource myProfilePicture = userService.getProfilePicture(id);
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.IMAGE_PNG);
-
-        //todo check image/png MediaType.valueOf()
-//        headers.setContentLength(;
-
-//        fileService.getObjects().forEach(s3Object -> System.out.println(s3Object.key()));
-
         return ResponseEntity.ok()
-//                .headers(headers)
                 .body(myProfilePicture);
     }
 
-    @PostMapping("/report")
+    @PostMapping("/user/report")
     public ResponseEntity<String> reportUser(@RequestBody ReportRequest request){
         userService.report(request);
         return ResponseEntity.ok("Reported!");
     }
+
 
 
 }

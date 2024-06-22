@@ -26,8 +26,18 @@ aws:
 
 server:
   host: ${SERVER_HOST}
+  ssl:
+    enabled: true
+    key-alias: ${KEY_ALIAS}
+    key-store: classpath:server.keystore
+    key-store-type: ${KEY_STORE_TYPE}
+    key-store-password: ${KEY_PASSWORD}
+    key-password: ${KEY_STORE_PASSWORD}
+
+
   error:
     include-message: always
+
 
 
 

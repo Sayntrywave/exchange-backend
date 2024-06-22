@@ -46,9 +46,9 @@
 
 ---------------
 
-create type user_roles as enum ('MODERATOR', 'USER');
-
-create type house_status as enum ('MODERATED', 'UP_FOR_SALE');
+-- create type user_roles as enum ('MODERATOR', 'USER');
+--
+-- create type house_status as enum ('MODERATED', 'UP_FOR_SALE');
 
 
 

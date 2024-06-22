@@ -25,8 +25,6 @@ public class TradeService {
     TradeRepository tradeRepository;
     ModelMapper modelMapper;
     HouseService houseService;
-
-    //todo сделать бин с авторизованным пользователем
     UserService userService;
 
 

@@ -63,7 +63,6 @@ public class HouseService {
 
     @Transactional
     public void edit(House temp, int id){
-        //todo rename
         House house = houseRepository.getReferenceById(id);
 
         String city = temp.getCity();
@@ -101,7 +100,6 @@ public class HouseService {
             houseRepository.delete(house);
         }
         else {
-            //todo
         }
     }
 
@@ -115,7 +113,6 @@ public class HouseService {
     }
 
     public void addImages(MultipartFile[] files, int id) {
-        //todo make status to be moderated
         for (MultipartFile file : files) {
             fileService.uploadFile(file,"house_images/" + id + "/" + file.getOriginalFilename());
         }
@@ -131,12 +128,10 @@ public class HouseService {
         HouseReview review = modelMapper.map(request, HouseReview.class);
         review.setHouse(houseRepository.getReferenceById(request.getHouseId()));
          if(currentUser.getId() != review.getHouse().getUser().getId()){
-            //todo
             if(tradeRepository.findAllByUserAndHouse(review.getHouse().getId(),currentUser.getId())!= 0){
                 review.setAuthor(currentUser);
                 reviewRepository.save(review);
                 review.getHouse().getUser().addRating(request.getRating());
-                //todo проверить чтобы можно было только один отзыв
             }
         }
     }
@@ -147,5 +142,9 @@ public class HouseService {
 
     public InputStreamResource getImage(Integer id, String path) {
         return fileService.getFile(path);
+    }
+
+    public List<House> getUserHousesByUserId(int id) {
+        return houseRepository.getHousesByUserId(id);
     }
 }

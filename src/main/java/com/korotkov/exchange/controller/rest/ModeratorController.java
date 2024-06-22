@@ -35,7 +35,6 @@ public class ModeratorController {
                 .map(houseModeration -> {
                     HouseModerationResponse map = mapper.map(houseModeration, HouseModerationResponse.class);
                     map.setHouse(mapper.map(houseModeration.getHouse(), HouseResponse.class));
-//                    map.setUser(mapper.map(houseModeration.getUser(), UserDtoResponse.class));
                     return map;
                 }).collect(Collectors.toList());
         return ResponseEntity.ok(listOfHouses);

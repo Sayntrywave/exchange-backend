@@ -1,6 +1,7 @@
 package com.korotkov.exchange.dto.response;
 
 
+import com.korotkov.exchange.model.HouseStatus;
 import com.korotkov.exchange.model.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,4 +23,7 @@ public class HouseResponse {
     private String address;
 
     private UserDtoResponse user;
+
+    private HouseStatus status;
+
 }

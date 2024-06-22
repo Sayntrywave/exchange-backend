@@ -33,15 +33,15 @@ public class AuthController {
 
     @Value("${server.host}")
     String serverHost;
-    UserService userService;
-    AuthenticationManager authenticationManager;
-    ModelMapper modelMapper;
+    final UserService userService;
+    final AuthenticationManager authenticationManager;
+    final ModelMapper modelMapper;
 
-    MailSenderService mailSenderService;
+    final MailSenderService mailSenderService;
 
-    RegistrationService registrationService;
+    final RegistrationService registrationService;
 
-    JWTService jwtService;
+    final JWTService jwtService;
 
 
     @Autowired

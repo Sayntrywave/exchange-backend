@@ -59,7 +59,6 @@ public class FileService {
 
         GetObjectResponse response = responseInputStream.response();
         if(response == null || !response.contentType().startsWith("image")) {
-            //todo
         }
         InputStream stream = null;
         try {
@@ -73,26 +72,6 @@ public class FileService {
                 .build();
     }
 
-
-
-
-//    public List<InputStreamResource> getAllImages(String prefix){
-//        ListObjectsV2Request listObjectsRequest = ListObjectsV2Request.builder()
-//                .bucket(BUCKET_NAME)
-//                .prefix(prefix)
-//                .build();
-//
-//        List<InputStreamResource> images = new ArrayList<>();
-//        ListObjectsV2Response listObjectsResponse;
-//        do {
-//            listObjectsResponse = s3Client.listObjectsV2(listObjectsRequest);
-//            for (S3Object object : listObjectsResponse.contents()) {
-//                images.add(getImageFromS3(object.key()).getInputStreamResource());
-//            }
-//        } while (listObjectsResponse.isTruncated());
-//
-//        return images;
-//    }
     public List<ImageMetaData> getAllImages(String prefix){
         ListObjectsV2Request listObjectsRequest = ListObjectsV2Request.builder()
                 .bucket(BUCKET_NAME)

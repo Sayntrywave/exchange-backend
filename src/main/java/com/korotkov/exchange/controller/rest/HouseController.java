@@ -37,14 +37,7 @@ public class HouseController {
     ModelMapper modelMapper;
     HouseService houseService;
     TradeService tradeService;
-//    FileService fileService;
 
-
-
-//    @GetMapping("/houses/find")
-//    public ResponseEntity<List<HouseResponse>> getAllHouses(@RequestParam(name = "c") String city){
-//        return ResponseEntity.ok(getDtoListOfHouseResponses(houseService.findAllHouses(city)));
-//    }
     @GetMapping("/houses/find")
     public ResponseEntity<List<HouseResponse>> getAllHouses(@RequestParam(name = "c") String city,
                                                             @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd")Date sDate,
@@ -56,7 +49,6 @@ public class HouseController {
     }
 
     @GetMapping("/houses")
-//    @SecurityRequirement(name = "apiKeyAuth")
     public ResponseEntity<List<HouseResponse>> getAllMyHouses(){
         return ResponseEntity.ok(getDtoListOfHouseResponses(houseService.findAllMyHouses()));
     }
@@ -143,6 +135,11 @@ public class HouseController {
                     return map;
                 })
                 .collect(Collectors.toList()));
+    }
+
+    @GetMapping("/users/{id}/houses")
+    public ResponseEntity<List<HouseResponse>> getUserHouses(@PathVariable int id){
+        return ResponseEntity.ok(getDtoListOfHouseResponses(houseService.getUserHousesByUserId(id)));
     }
 
     private HouseResponse getHouseResponse(House house){

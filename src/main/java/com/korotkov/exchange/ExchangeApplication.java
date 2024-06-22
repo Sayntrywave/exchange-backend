@@ -6,13 +6,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.util.Date;
 
 @SpringBootApplication
-public class YoApplication {
+public class ExchangeApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(YoApplication.class, args);
+		SpringApplication.run(ExchangeApplication.class, args);
 	}
 
 	@Bean
