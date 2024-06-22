@@ -1,6 +1,7 @@
 package com.korotkov.exchange.controller.rest;
 
 
+import com.korotkov.exchange.util.BadRequestException;
 import com.korotkov.exchange.util.UserNotCreatedException;
 import com.korotkov.exchange.util.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,10 @@ public class RestExceptionHandler {
 
     @ExceptionHandler
     private ResponseEntity<String> handleException(UserNotCreatedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler
+    private ResponseEntity<String> handleException(BadRequestException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

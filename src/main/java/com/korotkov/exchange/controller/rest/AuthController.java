@@ -9,6 +9,7 @@ import com.korotkov.exchange.service.JWTService;
 import com.korotkov.exchange.service.MailSenderService;
 import com.korotkov.exchange.service.RegistrationService;
 import com.korotkov.exchange.service.UserService;
+import com.korotkov.exchange.util.BadRequestException;
 import com.korotkov.exchange.util.UserNotCreatedException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -63,7 +64,7 @@ public class AuthController {
 
         String token = registrationService.register(modelMapper.map(user, EmailUser.class));
 
-        mailSenderService.send(user.getEmail(), "Регистрация", "http://"+ serverHost+ ":8080/activate?t="  + token);
+        mailSenderService.send(user.getEmail(), "Регистрация", "https://"+ serverHost+ ":8080/activate?t="  + token);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -80,7 +81,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid AuthenticationRequest authenticationRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new BadCredentialsException(bindingResult.getFieldError().getDefaultMessage());
+            throw new BadRequestException(bindingResult.getFieldError().getDefaultMessage());
         }
 
 

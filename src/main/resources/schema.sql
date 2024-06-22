@@ -66,7 +66,8 @@ create table if not exists users
     surname       varchar(40) default 'иванов'::character varying not null,
     user_role     user_roles  default 'USER'::user_roles,
     total_reviews integer     default 0,
-    rating_sum    integer     default 0
+    rating_sum    integer     default 0,
+    description   varchar(1024)
 );
 
 
@@ -82,8 +83,10 @@ create table if not exists users_to_be_confirmed
     email     varchar(50) not null
         unique,
     is_in_ban boolean,
-    surname   varchar(80) not null
+    surname   varchar(80) not null,
+    description varchar(1024)
 );
+
 
 
 create table if not exists houses

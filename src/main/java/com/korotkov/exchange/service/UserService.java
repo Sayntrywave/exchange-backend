@@ -77,7 +77,7 @@ public class UserService {
         if (isInBan != null) {
             userToBeUpdated.setIsInBan(isInBan);
             String token = jwtService.generateToken(userToBeUpdated.getEmail(), "email");
-            mailSenderService.send(userToBeUpdated.getEmail(), "Вернуть аккаунт", "http://"+ serverHost+ ":8080/activate?t=" + token + "&is-in-ban=" + "false");
+            mailSenderService.send(userToBeUpdated.getEmail(), "Вернуть аккаунт", "https://"+ serverHost+ ":8080/activate?t=" + token + "&is-in-ban=" + "false");
         }
 
         String name = user.getName();
@@ -94,7 +94,7 @@ public class UserService {
                 throw new BadCredentialsException("email <" + email + "> has already been taken");
             }
             String token = jwtService.generateToken(userToBeUpdated.getEmail(), "email");
-            mailSenderService.send(user.getEmail(), "Поменять почту", "http://"+ serverHost+ ":8080/activate?t=" + token +
+            mailSenderService.send(user.getEmail(), "Поменять почту", "https://"+ serverHost+ ":8080/activate?t=" + token +
                     "&email=" + user.getEmail());
 
         }
@@ -110,6 +110,11 @@ public class UserService {
         String password = user.getPassword();
         if (password != null && !password.isEmpty()) {
             userToBeUpdated.setPassword(passwordEncoder.encode(password));
+        }
+
+        String description = user.getDescription();
+        if(description != null){
+           userToBeUpdated.setDescription(description);
         }
 
         save(userToBeUpdated);

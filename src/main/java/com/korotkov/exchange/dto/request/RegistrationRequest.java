@@ -19,6 +19,9 @@ public class RegistrationRequest {
     @NotEmpty
     String surname;
 
+    @NotEmpty
+    String description;
+
     @Email
     String email;
     @Size(min = 1, max = 30, message = "your login size should be in range(1,30)")

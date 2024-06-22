@@ -1,15 +1,13 @@
 package com.korotkov.exchange.controller.rest;
 
 
-import com.korotkov.exchange.dto.request.HouseRequest;
-import com.korotkov.exchange.dto.request.HouseReviewRequest;
-import com.korotkov.exchange.dto.request.TradeRequest;
-import com.korotkov.exchange.dto.request.TradeStatusRequest;
+import com.korotkov.exchange.dto.request.*;
 import com.korotkov.exchange.dto.response.HouseResponse;
 import com.korotkov.exchange.dto.response.HouseReviewResponse;
 import com.korotkov.exchange.dto.response.TradeResponse;
 import com.korotkov.exchange.dto.response.UserDtoResponse;
 import com.korotkov.exchange.model.House;
+import com.korotkov.exchange.model.HouseReview;
 import com.korotkov.exchange.service.FileService;
 import com.korotkov.exchange.service.HouseService;
 import com.korotkov.exchange.service.TradeService;
@@ -20,6 +18,7 @@ import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -110,7 +109,7 @@ public class HouseController {
         houseService.addImages(files, id);
     }
 
-    @GetMapping("/houses/trades")
+    @GetMapping("/user/trades")
     public List<TradeResponse> getAllMyTrades(){
         return tradeService.findAllMyTrades().stream()
                 .map(trade -> {
@@ -135,6 +134,39 @@ public class HouseController {
                     return map;
                 })
                 .collect(Collectors.toList()));
+    }
+    @PutMapping("/houses/review")
+    public ResponseEntity<HttpStatus> editReview(@RequestBody HouseReviewEditRequest editRequest){
+
+        houseService.editReview(editRequest);
+
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @PutMapping("/houses/reviews/{id}")
+    public ResponseEntity<HttpStatus> deleteReview(@PathVariable int id){
+
+        houseService.deleteReview(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @GetMapping("/houses/reviews/{id}")
+    public ResponseEntity<HouseReviewResponse> getReview(@PathVariable int id){
+        HouseReview review = houseService.getReview(id);
+        HouseReviewResponse map = modelMapper.map(review, HouseReviewResponse.class);
+        map.setUserDtoResponse(modelMapper.map(review.getAuthor(), UserDtoResponse.class));
+        return ResponseEntity.ok(map);
+    }
+
+    @GetMapping("/users/{id}/reviews")
+    public ResponseEntity<List<HouseReviewResponse>> getUserReviews(@PathVariable int id){
+        return ResponseEntity.ok(houseService.getAllUsersReviews(id).stream()
+                .map(houseReview -> {
+                    HouseReviewResponse map = modelMapper.map(houseReview, HouseReviewResponse.class);
+                    map.setUserDtoResponse(modelMapper.map(houseReview.getAuthor(), UserDtoResponse.class));
+                    return map;
+                }
+        ).collect(Collectors.toList()));
     }
 
     @GetMapping("/users/{id}/houses")

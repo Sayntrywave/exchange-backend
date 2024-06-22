@@ -46,6 +46,10 @@ public class User {
     @Column(name = "rating_sum")
     private int ratingSum;
 
+
+    @Column(name = "description")
+    private String description;
+
     @Enumerated(EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "user_role")
@@ -60,6 +64,10 @@ public class User {
     public void addRating(int rating){
         ratingSum += rating;
         totalReviews ++;
+    }
+
+    public void editRating(int rating){
+        ratingSum += rating;
     }
 
     public double getAverageRating(){

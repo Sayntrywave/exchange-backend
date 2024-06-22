@@ -36,4 +36,7 @@ public class EmailUser {
 
     @Column(name = "is_in_ban")
     private Boolean isInBan;
+
+    @Column(name = "description")
+    private String description;
 }

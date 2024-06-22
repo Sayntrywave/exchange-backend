@@ -25,5 +25,8 @@ public class UserEditRequest {
 
     private Boolean isInBan;
 
+    private String description;
+
+
 
 }

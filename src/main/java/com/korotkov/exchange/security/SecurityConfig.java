@@ -49,12 +49,13 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(requests -> requests
-                            .requestMatchers("/login", "/register",
-                                    "/error", "/activate","/swagger-ui.html",
-                                    "/swagger-ui/**","/v3/api-docs/**", "/users/**").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/cities","/houses/find","/houses/{id}/**","/user/**").permitAll()
-                            .requestMatchers("/moderator/**").hasRole("MODERATOR")
-                            .anyRequest().hasRole("USER"))
+                        .requestMatchers("/login", "/register",
+                                "/error", "/activate", "/swagger-ui.html",
+                                "/swagger-ui/**", "/v3/api-docs/**", "/users/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/cities", "/houses/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/houses/trades").hasRole("USER")
+                        .requestMatchers("/moderator/**").hasRole("MODERATOR")
+                        .anyRequest().authenticated())
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

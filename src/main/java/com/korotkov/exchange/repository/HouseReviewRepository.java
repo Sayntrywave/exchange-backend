@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface HouseReviewRepository  extends JpaRepository<HouseReview, Integer> {
     List<HouseReview> findAllByHouse_Id(int houseId);
+    List<HouseReview> findAllByAuthor_Id(int authorId);
+
 }
