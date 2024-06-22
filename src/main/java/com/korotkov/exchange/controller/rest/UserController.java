@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,12 +45,8 @@ public class UserController {
         return ResponseEntity.ok(modelMapper.map(userService.getCurrentUser(), UserDtoResponse.class));
     }
     @PutMapping("/user/edit")
-    public ResponseEntity<Map<String, String>> editUser(@RequestBody @Valid UserEditRequest userEditRequest,
-                                                        BindingResult bindingResult) {
+    public ResponseEntity<Map<String, String>> editUser(@RequestBody @Valid UserEditRequest userEditRequest){
 
-        if (bindingResult.hasErrors()) {
-            throw new BadCredentialsException(bindingResult.getFieldError().getField() + " " + bindingResult.getFieldError().getDefaultMessage());
-        }
         User map = modelMapper.map(userEditRequest, User.class);
 
         boolean update = userService.update(map);
@@ -71,9 +66,6 @@ public class UserController {
 
     @PostMapping("/user/avatar")
     public ResponseEntity<Void> uploadUserAvatar(@RequestParam("file") MultipartFile file) throws IOException {
-        if (file.getContentType() != null && file.getContentType().startsWith("image/")) {
-            System.out.println("yo this is an image");
-        }
         userService.uploadProfilePicture(file);
         return ResponseEntity.ok().build();
     }

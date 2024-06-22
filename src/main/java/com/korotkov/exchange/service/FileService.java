@@ -1,6 +1,7 @@
 package com.korotkov.exchange.service;
 
 
+import com.korotkov.exchange.util.BadRequestException;
 import com.korotkov.exchange.util.ImageMetaData;
 import com.korotkov.exchange.util.S3File;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,9 @@ public class FileService {
     private S3Client s3Client;
 
     public void uploadFile(MultipartFile file, String key) {
+        if(file.getContentType() == null || !file.getContentType().startsWith("image")){
+            throw new BadRequestException("file type should be an image");
+        }
         try {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(BUCKET_NAME)
@@ -35,7 +39,7 @@ public class FileService {
 
             s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload file", e);
+            throw new BadRequestException("Failed to upload file");
         }
     }
 
@@ -44,9 +48,12 @@ public class FileService {
                     .bucket(BUCKET_NAME)
                     .key(key)
                     .build();
-
-        ResponseBytes<GetObjectResponse> responseBytes = s3Client.getObjectAsBytes(getObjectRequest);
-        return new InputStreamResource(responseBytes.asInputStream());
+        try {
+            ResponseBytes<GetObjectResponse> responseBytes = s3Client.getObjectAsBytes(getObjectRequest);
+            return new InputStreamResource(responseBytes.asInputStream());
+        } catch (NoSuchKeyException e){
+            throw new BadRequestException("image " + key.substring(key.lastIndexOf('/' + 1)) + " not found");
+        }
     }
 
     public S3File getImageFromS3(String key)  {
@@ -59,6 +66,7 @@ public class FileService {
 
         GetObjectResponse response = responseInputStream.response();
         if(response == null || !response.contentType().startsWith("image")) {
+            throw new BadRequestException("file type should be an image");
         }
         InputStream stream = null;
         try {
@@ -89,9 +97,6 @@ public class FileService {
                                 .build());
             }
         } while (listObjectsResponse.isTruncated());
-//        if(images.size() != 0){
-//            images.remove(0);
-//        }
         return images;
     }
 

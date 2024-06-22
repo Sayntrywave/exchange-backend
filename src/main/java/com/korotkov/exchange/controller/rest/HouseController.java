@@ -12,6 +12,7 @@ import com.korotkov.exchange.service.FileService;
 import com.korotkov.exchange.service.HouseService;
 import com.korotkov.exchange.service.TradeService;
 import com.korotkov.exchange.util.ImageMetaData;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -58,7 +59,7 @@ public class HouseController {
     }
 
     @PostMapping("/houses")
-    public void saveHouse(@RequestBody HouseRequest request) {
+    public void saveHouse(@RequestBody @Valid HouseRequest request) {
         houseService.create(modelMapper.map(request, House.class));
     }
 

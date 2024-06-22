@@ -6,6 +6,8 @@ import com.korotkov.exchange.model.User;
 import com.korotkov.exchange.repository.ReportedUserRepository;
 import com.korotkov.exchange.repository.UserRepository;
 import com.korotkov.exchange.security.MyUserDetails;
+import com.korotkov.exchange.util.BadRequestException;
+import com.korotkov.exchange.util.ImageMetaData;
 import com.korotkov.exchange.util.UserNotFoundException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Service
@@ -52,11 +56,11 @@ public class UserService {
 
 
     public User findByLogin(String login) {
-        return userRepository.findUserByLogin(login).orElseThrow(() -> new UserNotFoundException("user not found"));
+        return userRepository.findUserByLogin(login).orElseThrow(() -> new UserNotFoundException("user not found with login " + login));
     }
 
     public User findByEmail(String email) {
-        return userRepository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("user not found"));
+        return userRepository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("user not found with email " + email));
     }
 
 
@@ -124,7 +128,20 @@ public class UserService {
     public InputStreamResource getProfilePicture(int id){
 
         //todo refactor
-        return fileService.getFile("profile_pictures/" + id +".png");
+        List<ImageMetaData> allImages = fileService.getAllImages("profile_pictures/" + id);
+        if(allImages.isEmpty()){
+            throw new BadRequestException("User photo with id " + id + " not found");
+        }
+        else{
+
+            String path = allImages.get(allImages.size() - 1).getPath();
+            String imageName = path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
+            if(!imageName.equals(String.valueOf(id))){
+                throw new BadRequestException("User photo with id " + id + " not found");
+            }
+            return fileService.getFile(path);
+        }
+//        return fileService.getFile("profile_pictures/" + id +".png");
     }
 
     public void uploadProfilePicture(MultipartFile file){

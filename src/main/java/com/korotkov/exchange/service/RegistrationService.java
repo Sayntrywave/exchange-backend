@@ -6,43 +6,51 @@ import com.korotkov.exchange.model.User;
 import com.korotkov.exchange.model.UserRole;
 import com.korotkov.exchange.repository.EmailRepository;
 import com.korotkov.exchange.repository.UserRepository;
+import com.korotkov.exchange.util.BadRequestException;
 import com.korotkov.exchange.util.UserNotCreatedException;
 import com.korotkov.exchange.util.UserNotFoundException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailSendException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RegistrationService {
+    @Value("${server.host}")
+    String serverHost;
 
-    UserRepository repository;
+    final UserRepository repository;
 
-    EmailRepository emailRepository;
+    final EmailRepository emailRepository;
 
-    PasswordEncoder passwordEncoder;
+    final PasswordEncoder passwordEncoder;
 
-    JWTService jwtService;
+    final JWTService jwtService;
 
-    ModelMapper modelMapper;
+    final ModelMapper modelMapper;
+
+    final MailSenderService mailSenderService;
 
 
     @Autowired
-    public RegistrationService(UserRepository repository, EmailRepository emailRepository, PasswordEncoder passwordEncoder, JWTService jwtService, ModelMapper modelMapper) {
+    public RegistrationService(UserRepository repository, EmailRepository emailRepository, PasswordEncoder passwordEncoder, JWTService jwtService, ModelMapper modelMapper, MailSenderService mailSenderService) {
         this.repository = repository;
         this.emailRepository = emailRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.modelMapper = modelMapper;
+        this.mailSenderService = mailSenderService;
     }
 
     @Transactional
-    public String register(EmailUser user) {
+    public void register(EmailUser user) {
         String login = user.getLogin();
         if (repository.existsUserByLogin(login)) {
             throw new UserNotCreatedException("login <" + login + "> has already been taken");
@@ -53,9 +61,14 @@ public class RegistrationService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setIsInBan(false);
-        emailRepository.save(user);
 
-        return jwtService.generateToken(user.getEmail(), "email");
+        try{
+            mailSenderService.send(user.getEmail(), "Регистрация", "https://"+ serverHost+ ":8080/activate?t="  + jwtService.generateToken(user.getEmail(), "email"));
+            emailRepository.save(user);
+        }
+        catch (MailSendException e){
+            throw new BadRequestException("Invalid Address: couldn't send an e-mail to " + user.getEmail());
+        }
     }
 
     @Transactional

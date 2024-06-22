@@ -6,6 +6,7 @@ import com.korotkov.exchange.model.House;
 import com.korotkov.exchange.model.Trade;
 import com.korotkov.exchange.model.TradeStatus;
 import com.korotkov.exchange.repository.TradeRepository;
+import com.korotkov.exchange.util.BadRequestException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -33,11 +34,10 @@ public class TradeService {
         Trade trade = modelMapper.map(request, Trade.class);
 
 
-        //todo refactor
         trade.setGivenHouse(houseService.findHouseById(request.getGivenHouseId()));
 
         if(trade.getGivenHouse().getUser().getId() != userService.getCurrentUser().getId()){
-            throw new RuntimeException("sdfdasfasf");
+            throw new BadRequestException("you can't trade not your houses");
         }
 
 
@@ -48,7 +48,7 @@ public class TradeService {
             tradeRepository.save(trade);
         }
         else {
-            throw new BadCredentialsException(trade + "невозможен");
+            throw new BadRequestException(trade + "невозможен, этот дом уже сдается в эти сроки");
         }
     }
 
@@ -58,13 +58,13 @@ public class TradeService {
         if(trade.getReceivedHouse().getUser().getId() == userService.getCurrentUser().getId()){
             if(status.equals(TradeStatus.REJECTED)){
                 if(trade.getStatus().equals(TradeStatus.COMPLETED)){
-                    throw new BadCredentialsException("Нельзя отменить совершенную сделку");
+                    throw new BadRequestException("Нельзя отменить совершенную сделку");
                 }
             }
             trade.setStatus(status);
         }
         else {
-            throw new BadCredentialsException("Нельзя изменить сделку других пользователей");
+            throw new BadRequestException("Нельзя изменить сделку других пользователей");
         }
     }
 

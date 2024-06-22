@@ -100,6 +100,7 @@ public class HouseService {
         if (house.getUser().getId() == userService.getCurrentUser().getId()) {
             houseRepository.delete(house);
         } else {
+            throw new BadRequestException("you can't delete rother users' houses");
         }
     }
 
