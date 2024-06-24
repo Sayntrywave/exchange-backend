@@ -79,11 +79,18 @@ public class HouseController {
         houseService.delete(id);
     }
 
+    @GetMapping("/houses/trades")
+    public ResponseEntity<List<TradeResponse>> getTrades(@RequestParam("givenHouseId") Integer givenHouseId,
+                                                         @RequestParam("receivedHouseId") Integer receivedHouseId){
+        return ResponseEntity.ok(tradeService.findAllTrades(givenHouseId, receivedHouseId).stream()
+                .map(trade -> modelMapper.map(trade, TradeResponse.class))
+                .collect(Collectors.toList()));
+    }
 
 
     @PostMapping("/houses/trade")
-    public void makeTrade(@RequestBody TradeRequest request){
-        tradeService.save(request);
+    public ResponseEntity<TradeResponse> makeTrade(@RequestBody TradeRequest request){
+        return ResponseEntity.ok(modelMapper.map(tradeService.save(request), TradeResponse.class));
     }
 
     @PutMapping("/houses/trade")
@@ -174,6 +181,9 @@ public class HouseController {
     public ResponseEntity<List<HouseResponse>> getUserHouses(@PathVariable int id){
         return ResponseEntity.ok(getDtoListOfHouseResponses(houseService.getUserHousesByUserId(id)));
     }
+
+
+
 
     private HouseResponse getHouseResponse(House house){
         HouseResponse dto = modelMapper.map(house, HouseResponse.class);

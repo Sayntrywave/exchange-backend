@@ -35,6 +35,9 @@ public interface TradeRepository extends JpaRepository<Trade, Integer> {
     Integer isTradePossible(int house_id, int house2_id, Date startDate, Date endDate);
 
 
+    List<Trade> findAllByGivenHouse_IdAndReceivedHouseId(int givenId, int receivedId);
+
+
     @Query("SELECT t FROM Trade t WHERE t.givenHouse.user.id = :userId OR t.receivedHouse.user.id = :userId")
     List<Trade> findAllMyTrades(Integer userId);
 

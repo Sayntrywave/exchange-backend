@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Недействительная ссылка</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #FF5F6D, #FFC371);
+            font-family: 'Arial', sans-serif;
+            color: #ffffff;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .close-message {
+            font-size: 1em;
+            color: #dddddd;
+        }
+    </style>
+    <script>
+        // Функция для закрытия окна через 5 секунд
+        function closeWindow() {
+            setTimeout(function() {
+                window.close();
+            }, 5000);
+        }
+    </script>
+</head>
+<body onload="closeWindow()">
+<div class="container">
+    <h1>Недействительная ссылка</h1>
+    <p>К сожалению, ссылка для подтверждения почты недействительна или истекла. Пожалуйста, запросите новую ссылку для подтверждения.</p>
+    <p class="close-message">Это окно закроется автоматически через несколько секунд.</p>
+</div>
+</body>
+</html>

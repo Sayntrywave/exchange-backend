@@ -72,32 +72,27 @@ public class RegistrationService {
     }
 
     @Transactional
-    public boolean activate(String token, Boolean isInBan, String email) {
+    public void activate(String token, Boolean isInBan, String email) {
         String userEmail = jwtService.validateTokenAndRetrieveClaim(token, "email");
-        try {
-            if (isInBan == null && email == null) {
+        if (isInBan == null && email == null) {
 
-                EmailUser emailUser = emailRepository.
-                        findEmailUserByEmail(userEmail)
-                        .orElseThrow(() -> new UserNotFoundException("user not found"));
-                User map = modelMapper.map(emailUser, User.class);
-                map.setRole(UserRole.USER);
-                repository.save(map);
-                emailRepository.delete(emailUser);
-            } else if (isInBan != null) {
-                User user = repository.findUserByEmail(userEmail)
-                        .orElseThrow(() -> new UserNotFoundException("user not found"));
-                user.setIsInBan(isInBan);
-                repository.save(user);
-            } else {
-                User user = repository.findUserByEmail(userEmail)
-                        .orElseThrow(() -> new UserNotFoundException("user not found"));
-                user.setEmail(email);
-                repository.save(user);
-            }
-            return true;
-        } catch (UserNotFoundException e){
-            return false;
+            EmailUser emailUser = emailRepository.
+                    findEmailUserByEmail(userEmail)
+                    .orElseThrow(() -> new BadRequestException("user not found"));
+            User map = modelMapper.map(emailUser, User.class);
+            map.setRole(UserRole.USER);
+            repository.save(map);
+            emailRepository.delete(emailUser);
+        } else if (isInBan != null) {
+            User user = repository.findUserByEmail(userEmail)
+                    .orElseThrow(() -> new UserNotFoundException("user not found"));
+            user.setIsInBan(isInBan);
+            repository.save(user);
+        } else {
+            User user = repository.findUserByEmail(userEmail)
+                    .orElseThrow(() -> new UserNotFoundException("user not found"));
+            user.setEmail(email);
+            repository.save(user);
         }
 
     }

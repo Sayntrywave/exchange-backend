@@ -110,7 +110,8 @@ public class HouseService {
     }
 
     public List<House> findAllHouses(String city, Date sDate, Date eDate) {
-        return houseRepository.getAllCitiesWithCityAndDate(city, sDate, eDate);
+        User currentUser = userService.getCurrentUser();
+        return houseRepository.getAllCitiesWithCityAndDate(city, sDate, eDate, currentUser == null ? null : currentUser.getId());
     }
 
     public void addImages(MultipartFile[] files, int id) {

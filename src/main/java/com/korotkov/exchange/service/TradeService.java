@@ -11,8 +11,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.Banner;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,13 +28,13 @@ public class TradeService {
 
 
     @Transactional
-    public void save(TradeRequest request){
+    public Trade save(TradeRequest request) {
         Trade trade = modelMapper.map(request, Trade.class);
 
 
         trade.setGivenHouse(houseService.findHouseById(request.getGivenHouseId()));
 
-        if(trade.getGivenHouse().getUser().getId() != userService.getCurrentUser().getId()){
+        if (trade.getGivenHouse().getUser().getId() != userService.getCurrentUser().getId()) {
             throw new BadRequestException("you can't trade not your houses");
         }
 
@@ -45,31 +43,33 @@ public class TradeService {
 
         if (tradeRepository.isTradePossible(request.getGivenHouseId(), request.getReceivedHouseId(), request.getStartDate(), request.getEndDate()) == 0) {
             trade.setStatus(TradeStatus.PENDING);
-            tradeRepository.save(trade);
-        }
-        else {
-            throw new BadRequestException(trade + "невозможен, этот дом уже сдается в эти сроки");
+            return tradeRepository.save(trade);
+        } else {
+            throw new BadRequestException("Предложение обмена невозможно, этот дом уже сдается в эти сроки или вы уже предложили сделку этому пользователю");
         }
     }
 
     @Transactional
-    public void changeStatus(TradeStatus status, int tradeId){
+    public void changeStatus(TradeStatus status, int tradeId) {
         Trade trade = tradeRepository.getReferenceById(tradeId);
-        if(trade.getReceivedHouse().getUser().getId() == userService.getCurrentUser().getId()){
-            if(status.equals(TradeStatus.REJECTED)){
-                if(trade.getStatus().equals(TradeStatus.COMPLETED)){
+        if (trade.getReceivedHouse().getUser().getId() == userService.getCurrentUser().getId()) {
+            if (status.equals(TradeStatus.REJECTED)) {
+                if (trade.getStatus().equals(TradeStatus.COMPLETED)) {
                     throw new BadRequestException("Нельзя отменить совершенную сделку");
                 }
             }
             trade.setStatus(status);
-        }
-        else {
+        } else {
             throw new BadRequestException("Нельзя изменить сделку других пользователей");
         }
     }
 
-    public boolean haveTrade(int userId, House house){
+    public boolean haveTrade(int userId, House house) {
         return tradeRepository.findAllByUserAndHouse(userId, house.getId()) != 0;
+    }
+
+    public List<Trade> findAllTrades(int givenId, int receivedId) {
+        return tradeRepository.findAllByGivenHouse_IdAndReceivedHouseId(givenId, receivedId);
     }
 
 
