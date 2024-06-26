@@ -3,7 +3,6 @@ package com.korotkov.exchange.service;
 
 import com.korotkov.exchange.dto.request.ModeratorDecision;
 import com.korotkov.exchange.dto.request.ReportDetails;
-import com.korotkov.exchange.dto.request.ReportRequest;
 import com.korotkov.exchange.model.*;
 import com.korotkov.exchange.repository.HouseModerationRepository;
 import com.korotkov.exchange.repository.ReportedUserRepository;
@@ -26,44 +25,45 @@ public class ModeratorService {
     UserService userService;
 
     @Transactional
-    public void moderate(ModeratorDecision decision){
+    public void moderate(ModeratorDecision decision) {
         HouseModeration houseModeration = houseModerationRepository.getReferenceById(decision.getId());
 
         houseModeration.setDecision(decision.getDecision());
         houseModeration.setIsApproved(decision.getIsApproved());
 
         houseModerationRepository.save(houseModeration);
-        if(decision.getIsApproved()){
+        if (decision.getIsApproved()) {
             saveHouse(houseModeration);
         }
 
     }
 
     @Transactional
-    public void saveHouse(HouseModeration houseModeration){
+    public void saveHouse(HouseModeration houseModeration) {
         House house = houseModeration.getHouse();
 
         String city = houseModeration.getCity();
-        if(city != null){
+        if (city != null) {
             house.setCity(city);
         }
         String address = houseModeration.getAddress();
-        if(address != null){
+        if (address != null) {
             house.setAddress(address);
         }
         String description = houseModeration.getDescription();
-        if(description != null){
+        if (description != null) {
             house.setDescription(description);
         }
         house.setStatus(HouseStatus.UP_FOR_SALE);
 
         houseService.save(house);
     }
-    public List<HouseModeration> findAllHouses(){
+
+    public List<HouseModeration> findAllHouses() {
         return houseModerationRepository.findAllByIsApprovedIsNull();
     }
 
-    public List<ReportedUser> findAllReportedUsers(){
+    public List<ReportedUser> findAllReportedUsers() {
         return reportedUserRepository.findAllByIsRejectedNull();
     }
 

@@ -3,13 +3,11 @@ package com.korotkov.exchange.controller.rest;
 
 import com.korotkov.exchange.dto.request.ModeratorDecision;
 import com.korotkov.exchange.dto.request.ReportDetails;
-import com.korotkov.exchange.dto.request.ReportRequest;
 import com.korotkov.exchange.dto.response.HouseModerationResponse;
 import com.korotkov.exchange.dto.response.HouseResponse;
 import com.korotkov.exchange.dto.response.ReportedUserResponse;
 import com.korotkov.exchange.dto.response.UserDtoResponse;
 import com.korotkov.exchange.service.ModeratorService;
-import com.korotkov.exchange.service.UserService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,7 +28,7 @@ public class ModeratorController {
     ModelMapper mapper;
 
     @GetMapping("/houses")
-    public ResponseEntity<List<HouseModerationResponse>> getHouses(){
+    public ResponseEntity<List<HouseModerationResponse>> getHouses() {
         List<HouseModerationResponse> listOfHouses = moderatorService.findAllHouses().stream()
                 .map(houseModeration -> {
                     HouseModerationResponse map = mapper.map(houseModeration, HouseModerationResponse.class);
@@ -41,25 +39,25 @@ public class ModeratorController {
     }
 
     @PutMapping("/house")
-    public void setDecision(@RequestBody ModeratorDecision decision){
+    public void setDecision(@RequestBody ModeratorDecision decision) {
         moderatorService.moderate(decision);
     }
 
     @PutMapping("/ban")
-    public ResponseEntity<String> banUser(@RequestBody ReportDetails reportDetails){
+    public ResponseEntity<String> banUser(@RequestBody ReportDetails reportDetails) {
         moderatorService.banUser(reportDetails);
         return ResponseEntity.ok("banned!");
     }
 
     @PutMapping("/reject")
-    public ResponseEntity<String> rejectReport(@RequestBody ReportDetails reportDetails){
+    public ResponseEntity<String> rejectReport(@RequestBody ReportDetails reportDetails) {
         moderatorService.rejectRequest(reportDetails);
         return ResponseEntity.ok("Rejected!");
     }
 
 
     @GetMapping("/reported-users")
-    public ResponseEntity<List<ReportedUserResponse>> getReportedUsers(){
+    public ResponseEntity<List<ReportedUserResponse>> getReportedUsers() {
         return ResponseEntity.ok(moderatorService.findAllReportedUsers().stream()
                 .map(reportedUser -> {
                     ReportedUserResponse map = mapper.map(reportedUser, ReportedUserResponse.class);

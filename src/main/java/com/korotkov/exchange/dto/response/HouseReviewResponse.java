@@ -15,4 +15,5 @@ public class HouseReviewResponse {
     Integer rating;
     String description;
     UserDtoResponse userDtoResponse;
+    HouseResponse houseResponse;
 }

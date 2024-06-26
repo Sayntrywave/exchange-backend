@@ -15,7 +15,6 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,11 +40,12 @@ public class UserController {
     }
 
     @GetMapping("/user/me")
-    public ResponseEntity<UserDtoResponse> me(){
+    public ResponseEntity<UserDtoResponse> me() {
         return ResponseEntity.ok(modelMapper.map(userService.getCurrentUser(), UserDtoResponse.class));
     }
+
     @PutMapping("/user/edit")
-    public ResponseEntity<Map<String, String>> editUser(@RequestBody @Valid UserEditRequest userEditRequest){
+    public ResponseEntity<Map<String, String>> editUser(@RequestBody @Valid UserEditRequest userEditRequest) {
 
         User map = modelMapper.map(userEditRequest, User.class);
 
@@ -78,12 +78,17 @@ public class UserController {
                 .body(myProfilePicture);
     }
 
+    @GetMapping(value = "/users/{id}")
+    public ResponseEntity<UserDtoResponse> getUser(@PathVariable int id) {
+        return ResponseEntity.ok(modelMapper.map(userService.getById(id), UserDtoResponse.class));
+    }
+
+
     @PostMapping("/user/report")
-    public ResponseEntity<String> reportUser(@RequestBody ReportRequest request){
+    public ResponseEntity<String> reportUser(@RequestBody ReportRequest request) {
         userService.report(request);
         return ResponseEntity.ok("Reported!");
     }
-
 
 
 }

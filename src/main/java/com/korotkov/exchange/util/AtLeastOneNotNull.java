@@ -13,6 +13,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AtLeastOneNotNull {
     String message() default "At least one of the fields must not be null";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

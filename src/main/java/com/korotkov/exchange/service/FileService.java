@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -28,7 +29,7 @@ public class FileService {
     private S3Client s3Client;
 
     public void uploadFile(MultipartFile file, String key) {
-        if(file.getContentType() == null || !file.getContentType().startsWith("image")){
+        if (file.getContentType() == null || !file.getContentType().startsWith("image")) {
             throw new BadRequestException("file type should be an image");
         }
         try {
@@ -43,20 +44,20 @@ public class FileService {
         }
     }
 
-    public InputStreamResource getFile(String key){
+    public InputStreamResource getFile(String key) {
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                    .bucket(BUCKET_NAME)
-                    .key(key)
-                    .build();
+                .bucket(BUCKET_NAME)
+                .key(key)
+                .build();
         try {
             ResponseBytes<GetObjectResponse> responseBytes = s3Client.getObjectAsBytes(getObjectRequest);
             return new InputStreamResource(responseBytes.asInputStream());
-        } catch (NoSuchKeyException e){
+        } catch (NoSuchKeyException e) {
             throw new BadRequestException("image " + key.substring(key.lastIndexOf('/' + 1)) + " not found");
         }
     }
 
-    public S3File getImageFromS3(String key)  {
+    public S3File getImageFromS3(String key) {
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(BUCKET_NAME)
                 .key(key)
@@ -65,7 +66,7 @@ public class FileService {
         ResponseInputStream<GetObjectResponse> responseInputStream = s3Client.getObject(getObjectRequest);
 
         GetObjectResponse response = responseInputStream.response();
-        if(response == null || !response.contentType().startsWith("image")) {
+        if (response == null || !response.contentType().startsWith("image")) {
             throw new BadRequestException("file type should be an image");
         }
         InputStream stream = null;
@@ -80,7 +81,7 @@ public class FileService {
                 .build();
     }
 
-    public List<ImageMetaData> getAllImages(String prefix){
+    public List<ImageMetaData> getAllImages(String prefix) {
         ListObjectsV2Request listObjectsRequest = ListObjectsV2Request.builder()
                 .bucket(BUCKET_NAME)
                 .prefix(prefix)
@@ -90,11 +91,11 @@ public class FileService {
         ListObjectsV2Response listObjectsResponse;
         do {
             listObjectsResponse = s3Client.listObjectsV2(listObjectsRequest);
-            for (S3Object object : listObjectsResponse.contents()) {
+            for (S3Object object : listObjectsResponse.contents().stream().sorted(Comparator.comparing(S3Object::lastModified)).toList()) {
                 images.add(ImageMetaData.builder()
-                                .path(object.key())
-                                .size(object.size())
-                                .build());
+                        .path(object.key())
+                        .size(object.size())
+                        .build());
             }
         } while (listObjectsResponse.isTruncated());
         return images;

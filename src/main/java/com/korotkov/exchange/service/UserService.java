@@ -29,19 +29,14 @@ import java.util.List;
 
 public class UserService {
 
-    @Value("${server.host}")
-    String serverHost;
-
     final UserRepository userRepository;
     final PasswordEncoder passwordEncoder;
-
     final MailSenderService mailSenderService;
-
-
     final JWTService jwtService;
     final FileService fileService;
-
     final ReportedUserRepository reportedUserRepository;
+    @Value("${server.host}")
+    String serverHost;
 
 
     @Autowired
@@ -81,7 +76,7 @@ public class UserService {
         if (isInBan != null) {
             userToBeUpdated.setIsInBan(isInBan);
             String token = jwtService.generateToken(userToBeUpdated.getEmail(), "email");
-            mailSenderService.send(userToBeUpdated.getEmail(), "Вернуть аккаунт", "https://"+ serverHost+ ":8080/activate?t=" + token + "&is-in-ban=" + "false");
+            mailSenderService.send(userToBeUpdated.getEmail(), "Вернуть аккаунт", "https://" + serverHost + ":8080/activate?t=" + token + "&is-in-ban=" + "false");
         }
 
         String name = user.getName();
@@ -98,7 +93,7 @@ public class UserService {
                 throw new BadCredentialsException("email <" + email + "> has already been taken");
             }
             String token = jwtService.generateToken(userToBeUpdated.getEmail(), "email");
-            mailSenderService.send(user.getEmail(), "Поменять почту", "https://"+ serverHost+ ":8080/activate?t=" + token +
+            mailSenderService.send(user.getEmail(), "Поменять почту", "https://" + serverHost + ":8080/activate?t=" + token +
                     "&email=" + user.getEmail());
 
         }
@@ -117,26 +112,25 @@ public class UserService {
         }
 
         String description = user.getDescription();
-        if(description != null){
-           userToBeUpdated.setDescription(description);
+        if (description != null) {
+            userToBeUpdated.setDescription(description);
         }
 
         save(userToBeUpdated);
         return flag;
     }
 
-    public InputStreamResource getProfilePicture(int id){
+    public InputStreamResource getProfilePicture(int id) {
 
         //todo refactor
         List<ImageMetaData> allImages = fileService.getAllImages("profile_pictures/" + id);
-        if(allImages.isEmpty()){
+        if (allImages.isEmpty()) {
             throw new BadRequestException("User photo with id " + id + " not found");
-        }
-        else{
+        } else {
 
             String path = allImages.get(allImages.size() - 1).getPath();
             String imageName = path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
-            if(!imageName.equals(String.valueOf(id))){
+            if (!imageName.equals(String.valueOf(id))) {
                 throw new BadRequestException("User photo with id " + id + " not found");
             }
             return fileService.getFile(path);
@@ -144,11 +138,12 @@ public class UserService {
 //        return fileService.getFile("profile_pictures/" + id +".png");
     }
 
-    public void uploadProfilePicture(MultipartFile file){
-        fileService.uploadFile(file,"profile_pictures/" +
+    public void uploadProfilePicture(MultipartFile file) {
+        fileService.uploadFile(file, "profile_pictures/" +
                 getCurrentUser().getId() +
-                file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") ));
+                file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
     }
+
     public User getById(int id) {
         if (userRepository.existsById(id)) {
             return userRepository.getReferenceById(id);

@@ -52,9 +52,9 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/register",
                                 "/error", "/activate", "/swagger-ui.html",
                                 "/swagger-ui/**", "/v3/api-docs/**", "/users/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/cities", "/houses/**","/activate").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/houses/trades").hasRole("USER")
-                        .requestMatchers("/user/me").hasAnyRole("USER","MODERATOR")
+                        .requestMatchers(HttpMethod.GET, "/cities", "/houses/**", "/activate").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/houses/trades").hasRole("USER")
+                        .requestMatchers("/user/**").hasAnyRole("USER", "MODERATOR")
                         .requestMatchers("/moderator/**").hasRole("MODERATOR")
                         .anyRequest().hasRole("USER"))
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->

@@ -1,9 +1,6 @@
 package com.korotkov.exchange.dto.response;
 
 
-import com.korotkov.exchange.model.House;
-import com.korotkov.exchange.model.User;
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

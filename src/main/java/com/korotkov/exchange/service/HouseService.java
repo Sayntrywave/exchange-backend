@@ -51,9 +51,9 @@ public class HouseService {
 
 
     @Transactional
-    public void create(House house) {
+    public HouseModeration create(House house) {
         house.setUser(userService.getCurrentUser());
-        sendToModerator(house, house);
+        return sendToModerator(house, house);
     }
 
     @Transactional
@@ -84,13 +84,13 @@ public class HouseService {
 
 
     @Transactional
-    public void sendToModerator(House temp, House house) {
+    public HouseModeration sendToModerator(House temp, House house) {
         house.setStatus(HouseStatus.MODERATED);
         save(house);
 
         HouseModeration houseModeration = modelMapper.map(temp, HouseModeration.class);
         houseModeration.setHouse(house);
-        houseModerationRepository.save(houseModeration);
+        return houseModerationRepository.save(houseModeration);
     }
 
     @Transactional
@@ -106,7 +106,7 @@ public class HouseService {
 
 
     public List<House> findAllHouses(String city) {
-        return houseRepository.getAllByCityIgnoreCaseStartingWith(city);
+        return houseRepository.getAllByCityIgnoreCaseStartingWith(city, userService.getCurrentUser().getId());
     }
 
     public List<House> findAllHouses(String city, Date sDate, Date eDate) {
@@ -134,6 +134,7 @@ public class HouseService {
                 review.setAuthor(currentUser);
                 reviewRepository.save(review);
                 review.getHouse().getUser().addRating(request.getRating());
+                review.getHouse().addRating(request.getRating());
             } else {
                 throw new BadRequestException("you can't add review of house if you don't have a trade");
             }
@@ -149,6 +150,7 @@ public class HouseService {
             Integer rating = request.getRating();
             if (rating != null) {
                 review.getHouse().getUser().editRating(rating - review.getRating());
+                review.getHouse().editRating(rating - review.getRating());
             }
             String description = request.getDescription();
             if (description != null) {
@@ -175,8 +177,12 @@ public class HouseService {
         return reviewRepository.getReferenceById(id);
     }
 
-    public List<HouseReview> getAllUsersReviews(int userId){
+    public List<HouseReview> getAllUsersReviews(int userId) {
         return reviewRepository.findAllByAuthor_Id(userId);
+    }
+
+    public List<HouseReview> getAllReviewsAboutUser(int userId) {
+        return reviewRepository.findAllUsersReviews(userId);
     }
 
     public List<HouseReview> findAllReviews(int id) {

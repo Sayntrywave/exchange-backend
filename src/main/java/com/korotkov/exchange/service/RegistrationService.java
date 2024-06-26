@@ -23,20 +23,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RegistrationService {
+    final UserRepository repository;
+    final EmailRepository emailRepository;
+    final PasswordEncoder passwordEncoder;
+    final JWTService jwtService;
+    final ModelMapper modelMapper;
+    final MailSenderService mailSenderService;
     @Value("${server.host}")
     String serverHost;
-
-    final UserRepository repository;
-
-    final EmailRepository emailRepository;
-
-    final PasswordEncoder passwordEncoder;
-
-    final JWTService jwtService;
-
-    final ModelMapper modelMapper;
-
-    final MailSenderService mailSenderService;
 
 
     @Autowired
@@ -62,11 +56,10 @@ public class RegistrationService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setIsInBan(false);
 
-        try{
-            mailSenderService.send(user.getEmail(), "Регистрация", "https://"+ serverHost+ ":8080/activate?t="  + jwtService.generateToken(user.getEmail(), "email"));
+        try {
+            mailSenderService.send(user.getEmail(), "Регистрация", "https://" + serverHost + ":8080/activate?t=" + jwtService.generateToken(user.getEmail(), "email"));
             emailRepository.save(user);
-        }
-        catch (MailSendException e){
+        } catch (MailSendException e) {
             throw new BadRequestException("Invalid Address: couldn't send an e-mail to " + user.getEmail());
         }
     }

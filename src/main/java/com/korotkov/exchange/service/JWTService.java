@@ -3,8 +3,6 @@ package com.korotkov.exchange.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -34,7 +32,7 @@ public class JWTService {
     }
 
     public String generateToken(String username) {
-        return generateToken(username, "username", 60*24);
+        return generateToken(username, "username", 60 * 24);
     }
 
     public String generateToken(String claim, String claimName) {

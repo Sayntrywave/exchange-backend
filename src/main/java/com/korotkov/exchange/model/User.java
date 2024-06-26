@@ -1,9 +1,10 @@
 package com.korotkov.exchange.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcType;
-import org.hibernate.annotations.Type;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.util.List;
@@ -61,16 +62,16 @@ public class User {
     private List<House> houses;
 
 
-    public void addRating(int rating){
+    public void addRating(int rating) {
         ratingSum += rating;
-        totalReviews ++;
+        totalReviews++;
     }
 
-    public void editRating(int rating){
+    public void editRating(int rating) {
         ratingSum += rating;
     }
 
-    public double getAverageRating(){
-        return (double) ratingSum /totalReviews;
+    public double getAverageRating() {
+        return (double) ratingSum / totalReviews;
     }
 }

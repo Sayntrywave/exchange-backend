@@ -18,7 +18,7 @@ public class HouseReview {
     private String description;
 
     private Integer rating;
-    
+
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;

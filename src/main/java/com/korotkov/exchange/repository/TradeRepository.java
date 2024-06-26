@@ -3,10 +3,8 @@ package com.korotkov.exchange.repository;
 
 import com.korotkov.exchange.model.House;
 import com.korotkov.exchange.model.Trade;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -28,10 +26,9 @@ public interface TradeRepository extends JpaRepository<Trade, Integer> {
     boolean isHouseTradedInDates(House house1, Date startDate, Date endDate);
 
 
-
     @Query("SELECT count(*) FROM Trade t " +
-    "WHERE (t.givenHouse.id = :house_id OR t.receivedHouse.id = :house2_id) " +
-    "AND (t.startDate <= :endDate AND t.endDate >= :startDate) ")
+            "WHERE (t.givenHouse.id = :house_id OR t.receivedHouse.id = :house2_id) " +
+            "AND (t.startDate <= :endDate AND t.endDate >= :startDate) ")
     Integer isTradePossible(int house_id, int house2_id, Date startDate, Date endDate);
 
 

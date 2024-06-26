@@ -10,14 +10,14 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class ExchangeApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ExchangeApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ExchangeApplication.class, args);
+    }
 
-	@Bean
-	public ModelMapper modelMapper() {
-		ModelMapper modelMapper = new ModelMapper();
-		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-		return modelMapper;
-	}
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        return modelMapper;
+    }
 }

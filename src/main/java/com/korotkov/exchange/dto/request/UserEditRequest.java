@@ -28,5 +28,4 @@ public class UserEditRequest {
     private String description;
 
 
-
 }

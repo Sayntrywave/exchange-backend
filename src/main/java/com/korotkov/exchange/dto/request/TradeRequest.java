@@ -1,7 +1,5 @@
 package com.korotkov.exchange.dto.request;
 
-import com.korotkov.exchange.model.House;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -21,9 +19,9 @@ public class TradeRequest {
     @NotNull
     private Integer receivedHouseId;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
 }

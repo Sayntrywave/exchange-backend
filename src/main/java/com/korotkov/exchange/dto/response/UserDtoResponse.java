@@ -16,7 +16,7 @@ public class UserDtoResponse {
     String surname;
     String name;
     Integer totalReviews;
-    Integer  ratingSum;
+    Integer ratingSum;
     String description;
     UserRole role;
 
